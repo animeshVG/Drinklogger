@@ -1,23 +1,35 @@
 import * as React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import Scan from './screens/Scan';
-import Main from './screens/Main';
+import SplashScreen from './screens/SplashScreen';
+import InputScreen from './screens/InputScreen';
+import QRCodeScreen from './screens/QRCodeScreen';
+import EnjoyScreen from './screens/EnjoyScreen';
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Scan">
+      <Stack.Navigator initialRouteName="Splash">
         <Stack.Screen
-          name="Scan"
-          component={Scan}
+          name="Splash"
+          component={SplashScreen}
           options={{headerShown: false}}
         />
         <Stack.Screen
-          name="Main"
-          component={Main}
+          name="Input"
+          component={InputScreen}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="QRCode"
+          component={QRCodeScreen}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="Enjoy"
+          component={EnjoyScreen}
           options={{headerShown: false}}
         />
       </Stack.Navigator>

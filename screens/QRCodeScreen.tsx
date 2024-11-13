@@ -1,14 +1,14 @@
 import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 
-const Scan = () => {
+const QRCodeScreen = () => {
   return (
     <View>
-      <Text>Hello</Text>
+      <Text>QR Code</Text>
     </View>
   );
 };
 
-export default Scan;
+export default QRCodeScreen;
 
 const styles = StyleSheet.create({});
