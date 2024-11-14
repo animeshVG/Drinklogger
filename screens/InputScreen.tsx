@@ -1,12 +1,12 @@
 import {
-  StyleSheet,
-  Text,
   View,
-  Image,
+  Text,
   TextInput,
-  Button,
+  Image,
   TouchableOpacity,
-  Alert,
+  StyleSheet,
+  KeyboardAvoidingView,
+  Platform,
   ScrollView,
 } from 'react-native';
 import React, {useState} from 'react';
@@ -16,11 +16,14 @@ import {CommonActions} from '@react-navigation/native';
 const InputScreen = ({navigation}) => {
   const [employeeName, setEmployeeName] = useState('');
   const [employeeId, setEmployeeId] = useState('');
+  const [isFormValid, setIsFormValid] = useState(false);
 
   const validateEnteredValues = () => {
     if (employeeId === '' || employeeName === '') {
+      setIsFormValid(false);
       return false;
     } else {
+      setIsFormValid(true);
       return true;
     }
   };
@@ -51,39 +54,53 @@ const InputScreen = ({navigation}) => {
       <View style={styles.Logo}>
         <Image source={require('../assests/Images/Logo.png')} />
       </View>
-      <View style={styles.Inputs}>
-        <View
-          style={{
-            marginTop: '10%',
-          }}>
-          <Text style={styles.Txt}>Name</Text>
-          <TextInput
-            placeholder="Enter Your Name"
-            style={styles.Input}
-            onChangeText={text => setEmployeeName(text)}
-            value={employeeName}
-          />
-        </View>
-        <View
-          style={{
-            marginTop: '10%',
-          }}>
-          <Text style={styles.Txt}>Emp ID</Text>
-          <TextInput
-            placeholder="Enter Emp ID"
-            style={styles.Input}
-            onChangeText={text => setEmployeeId(text)}
-            value={employeeId}
-          />
-        </View>
-      </View>
 
-      <View style={styles.proceed}>
-        <Image source={require('../assests/Images/VINZ.png')} />
-        <TouchableOpacity style={styles.btn} onPress={storeDataLocally}>
-          <Text style={styles.btntxt}>Proceed</Text>
-        </TouchableOpacity>
-      </View>
+      <KeyboardAvoidingView
+        style={styles.Inputs}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+        <ScrollView contentContainerStyle={{flexGrow: 1}}>
+          <View style={{marginTop: '10%'}}>
+            <Text style={styles.Txt}>Name</Text>
+            <TextInput
+              placeholder="Enter Your Name"
+              style={styles.Input}
+              onChangeText={text => {
+                setEmployeeName(text);
+                validateEnteredValues();
+              }}
+              value={employeeName}
+            />
+          </View>
+          <View style={{marginTop: '10%'}}>
+            <Text style={styles.Txt}>Emp ID</Text>
+            <TextInput
+              placeholder="Enter Emp ID"
+              style={styles.Input}
+              onChangeText={text => {
+                setEmployeeId(text);
+                validateEnteredValues();
+              }}
+              value={employeeId}
+            />
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
+
+      {isFormValid ? (
+        <View style={styles.proceed}>
+          <Image source={require('../assests/Images/VINZ.png')} />
+          <TouchableOpacity style={styles.btn} onPress={storeDataLocally}>
+            <Text style={styles.btntxt}>Proceed</Text>
+          </TouchableOpacity>
+        </View>
+      ) : (
+        <View style={styles.proceed}>
+          <Image source={require('../assests/Images/VINZ.png')} />
+          <TouchableOpacity style={styles.btnenable}>
+            <Text style={styles.btntxt}>Proceed</Text>
+          </TouchableOpacity>
+        </View>
+      )}
     </View>
   );
 };
@@ -98,21 +115,16 @@ const styles = StyleSheet.create({
   Logo: {
     height: '30%',
     width: '100%',
-    // backgroundColor: 'red',
-    display: 'flex',
     justifyContent: 'flex-end',
     alignItems: 'center',
   },
   Inputs: {
-    height: '50%',
-    width: '100%',
-    // backgroundColor: 'blue',
+    flex: 1, // Take remaining space after Logo and before Proceed
     padding: 20,
   },
   proceed: {
     height: '20%',
     width: '100%',
-    display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -124,18 +136,27 @@ const styles = StyleSheet.create({
   },
   Txt: {
     fontSize: 15,
-    fontWeight: 'semibold',
+    fontWeight: '600',
   },
   btn: {
     height: '30%',
     width: '90%',
-    backgroundColor: '#7fb2d9',
-    display: 'flex',
+    backgroundColor: '#0066b3',
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 10,
     marginTop: 25,
   },
+  btnenable: {
+    height: '30%',
+    width: '90%',
+    backgroundColor: '#7fb2d9',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 10,
+    marginTop: 25,
+  },
+
   btntxt: {
     fontSize: 18,
     fontWeight: 'bold',
