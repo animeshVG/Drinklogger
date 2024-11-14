@@ -1,7 +1,31 @@
 import {Image, StyleSheet, Text, View} from 'react-native';
-import React from 'react';
+import React, {useEffect} from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const SplashScreen = () => {
+const SplashScreen = ({navigation}) => {
+  const fetchData = async () => {
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    getData();
+  };
+
+  const getData = async () => {
+    try {
+      const employeeName = await AsyncStorage.getItem('employeeName');
+      const employeeId = await AsyncStorage.getItem('employeeId');
+      if (employeeName !== null || employeeId !== null) {
+        navigation.navigate('QRCode');
+      } else {
+        navigation.navigate('Input');
+      }
+    } catch (error) {
+      console.error('Error retrieving data', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
   return (
     <View style={styles.container}>
       <View style={styles.DL}>

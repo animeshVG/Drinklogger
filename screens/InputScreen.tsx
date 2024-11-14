@@ -6,10 +6,46 @@ import {
   TextInput,
   Button,
   TouchableOpacity,
+  Alert,
+  ScrollView,
 } from 'react-native';
-import React from 'react';
+import React, {useState} from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {CommonActions} from '@react-navigation/native';
 
-const InputScreen = () => {
+const InputScreen = ({navigation}) => {
+  const [employeeName, setEmployeeName] = useState('');
+  const [employeeId, setEmployeeId] = useState('');
+
+  const validateEnteredValues = () => {
+    if (employeeId === '' || employeeName === '') {
+      return false;
+    } else {
+      return true;
+    }
+  };
+
+  const storeDataLocally = async () => {
+    if (validateEnteredValues()) {
+      try {
+        await AsyncStorage.setItem('employeeName', employeeName);
+        await AsyncStorage.setItem('employeeId', employeeId);
+
+        //navigato QR Screen
+        navigation.dispatch(
+          CommonActions.reset({
+            index: 0,
+            routes: [{name: 'QRCode'}],
+          }),
+        );
+      } catch (error) {
+        console.error('Error saving data', error);
+      }
+    } else {
+      Alert.alert('Warning', 'Please Enter Valid Details');
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.Logo}>
@@ -21,20 +57,30 @@ const InputScreen = () => {
             marginTop: '10%',
           }}>
           <Text style={styles.Txt}>Name</Text>
-          <TextInput placeholder="Enter Your Name" style={styles.Input} />
+          <TextInput
+            placeholder="Enter Your Name"
+            style={styles.Input}
+            onChangeText={text => setEmployeeName(text)}
+            value={employeeName}
+          />
         </View>
         <View
           style={{
             marginTop: '10%',
           }}>
           <Text style={styles.Txt}>Emp ID</Text>
-          <TextInput placeholder="Enter Emp ID" style={styles.Input} />
+          <TextInput
+            placeholder="Enter Emp ID"
+            style={styles.Input}
+            onChangeText={text => setEmployeeId(text)}
+            value={employeeId}
+          />
         </View>
       </View>
 
       <View style={styles.proceed}>
         <Image source={require('../assests/Images/VINZ.png')} />
-        <TouchableOpacity style={styles.btn}>
+        <TouchableOpacity style={styles.btn} onPress={storeDataLocally}>
           <Text style={styles.btntxt}>Proceed</Text>
         </TouchableOpacity>
       </View>
