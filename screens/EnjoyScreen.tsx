@@ -1,7 +1,9 @@
 import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React from 'react';
 
-const EnjoyScreen = () => {
+const EnjoyScreen = ({route, navigation}) => {
+  const {empName, empId, date, time, drinkType} = route.params;
+
   return (
     <View style={styles.container}>
       <View style={styles.one}>
@@ -9,18 +11,30 @@ const EnjoyScreen = () => {
           <Image source={require('../assests/Images/Done.png')} />
         </View>
         <View style={styles.Greeting}>
-          <Text style={styles.GreetingTxt}>Thank You, Animesh !!</Text>
-          <Text style={styles.DateTime}>04:00 PM on 13/11/2024</Text>
+          <Text style={styles.GreetingTxt}>Thank You, {empName} !!</Text>
+          <Text style={styles.DateTime}>
+            {time} on {date}
+          </Text>
         </View>
       </View>
       <View style={styles.two}>
-        <Image source={require('../assests/Images/Chai.png')} />
+        {drinkType === 'dinklogger-tea' ? (
+          <Image source={require('../assests/Images/Chai.png')} />
+        ) : (
+          <Image source={require('../assests/Images/Coffee.png')} />
+        )}
       </View>
       <View style={styles.three}>
         <View>
-          <Text style={styles.TeaCoffee}>Enjoy Your Tea !!</Text>
+          {drinkType === 'dinklogger-tea' ? (
+            <Text style={styles.TeaCoffee}>Enjoy Your Tea !!</Text>
+          ) : (
+            <Text style={styles.TeaCoffee}>Enjoy Your Coffee !!</Text>
+          )}
         </View>
-        <TouchableOpacity style={styles.GoBack}>
+        <TouchableOpacity
+          style={styles.GoBack}
+          onPress={() => navigation.goBack()}>
           <Text style={styles.GoBackTxt}>Go Back</Text>
         </TouchableOpacity>
       </View>

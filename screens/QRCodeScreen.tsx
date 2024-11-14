@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {useState, useEffect} from 'react';
-import {Text, Alert, StyleSheet, TouchableOpacity, View} from 'react-native';
+import {Text, Alert, StyleSheet, View} from 'react-native';
 import {
   Camera,
   useCameraDevice,
@@ -8,7 +8,7 @@ import {
   useCodeScanner,
 } from 'react-native-vision-camera';
 
-const QRCodeScreen = () => {
+const QRCodeScreen = ({navigation}) => {
   const [isQRScanned, setIsQRScanned] = useState(false);
   const [isValidQR, setisValidQR] = useState(true);
   const [employeeName, setEmployeeName] = useState('');
@@ -33,9 +33,9 @@ const QRCodeScreen = () => {
   useEffect(() => {
     const requestCameraPermission = async () => {
       const status = await Camera.requestCameraPermission();
-      if (status !== 'authorized') {
-        console.warn('Camera permission is not granted');
-      }
+      // if (status !== 'authorized') {
+      //   console.warn('Camera permission is not granted');
+      // }
     };
 
     requestCameraPermission();
@@ -78,6 +78,15 @@ const QRCodeScreen = () => {
       //   date: formattedDate,
       //   time: formattedTime,
       // });
+      navigation.navigate('Enjoy', {
+        empName: employeeName,
+        empId: employeeId,
+        date: formattedDate,
+        time: formattedTime,
+        drinkType: drinkType,
+      });
+      setIsQRScanned(false);
+      setisValidQR(true);
     } catch (error) {
       console.error('Form submission error:', error);
       Alert.alert('Error', 'Failed to record drink. Please try again.');
@@ -90,7 +99,10 @@ const QRCodeScreen = () => {
     codeTypes: ['qr', 'ean-13'],
     onCodeScanned: codes => {
       console.log(codes[0].value);
-      if (codes[0].value === 'TEA' || codes[0].value === 'COFFEE') {
+      if (
+        codes[0].value === 'drinklogger-tea' ||
+        codes[0].value === 'drinklogger-coffee'
+      ) {
         setIsQRScanned(true);
         setisValidQR(true);
         submitDataToSheets(codes[0].value);
@@ -112,22 +124,19 @@ const QRCodeScreen = () => {
           Please scan a valid tea or coffee QR code.
         </Text>
       )}
-
       <Text style={styles.usernameTextStyle}>Hello, {employeeName}</Text>
       <Text style={styles.subTitleTextStyle}>Scan QR For Your Drink</Text>
       {!isQRScanned ? (
         <View style={styles.qrCodeContainerStyle}>
           <Camera
             codeScanner={codeScanner}
-            style={[
-              StyleSheet.absoluteFill,
-              {
-                margin: 6,
-                borderRadius: 20,
-                borderWidth: 4,
-                borderBlockColor: 'black',
-              },
-            ]}
+            // style={[
+            //   StyleSheet.absoluteFill,
+            //   {
+            //     margin: 6,
+            //   },
+            // ]}
+            style={{flex: 1}}
             device={device}
             isActive={true}
           />
@@ -168,7 +177,6 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     margin: 20,
   },
-
   qrCodeContainerStyle: {
     borderRadius: 8,
     backgroundColor: '#ffffff',
@@ -176,5 +184,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: 210,
     height: 200,
+    overflow: 'hidden',
   },
 });
