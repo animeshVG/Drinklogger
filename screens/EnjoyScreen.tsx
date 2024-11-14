@@ -18,7 +18,7 @@ const EnjoyScreen = ({route, navigation}) => {
         </View>
       </View>
       <View style={styles.two}>
-        {drinkType === 'dinklogger-tea' ? (
+        {drinkType === 'drinklogger-tea' ? (
           <Image source={require('../assests/Images/Chai.png')} />
         ) : (
           <Image source={require('../assests/Images/Coffee.png')} />
@@ -26,7 +26,7 @@ const EnjoyScreen = ({route, navigation}) => {
       </View>
       <View style={styles.three}>
         <View>
-          {drinkType === 'dinklogger-tea' ? (
+          {drinkType === 'drinklogger-tea' ? (
             <Text style={styles.TeaCoffee}>Enjoy Your Tea !!</Text>
           ) : (
             <Text style={styles.TeaCoffee}>Enjoy Your Coffee !!</Text>
