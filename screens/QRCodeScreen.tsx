@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 import React, {useState, useEffect} from 'react';
 import {Text, Alert, StyleSheet, View} from 'react-native';
 import {
@@ -42,42 +43,41 @@ const QRCodeScreen = ({navigation}) => {
     getData();
   }, []);
 
+  const convertToFormData = json => {
+    const formData = new FormData();
+    for (const key in json) {
+      formData.append(key, json[key]);
+    }
+    return formData;
+  };
+
   const submitDataToSheets = async drinkType => {
     try {
-      // const formId = formUrl.includes('TeaFormID')
-      //   ? 'TeaFormID'
-      //   : 'CoffeeFormID';
-
       const currentDateTime = new Date();
       const formattedDate = currentDateTime.toLocaleDateString();
       const formattedTime = currentDateTime.toLocaleTimeString();
 
-      console.log(drinkType);
-      console.log(currentDateTime);
-      console.log(formattedDate);
-      console.log(formattedTime);
+      const data = {
+        EMPLOYEE_ID: employeeId,
+        EMPLOYEE_NAME: employeeName,
+        DATE: formattedDate,
+        TIME: formattedTime,
+        DRINK_TYPE: drinkType === 'drinklogger-tea' ? 'TEA' : 'COFFEE',
+      };
 
-      // Add a network call over here to send the data to sheet
+      const response = await axios.post(
+        `https://script.google.com/macros/s/AKfycbxdCFY16wE1_qnHgSraVVHyGiqMCrjfucMk6owgYuMbHW8q6BLKrSOd3ii71Y0NsuxO/exec`,
+        convertToFormData(data),
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        },
+      );
 
-      // await axios.post(
-      //   `https://docs.google.com/forms/d/e/${formId}/formResponse`,
-      //   new URLSearchParams({
-      //     'entry.123456789': drinkType,
-      //     'entry.987654321': 'User Name', // Optional field for tracking user
-      //   }),
-      // );
+      console.log(response.status);
+      console.log(response.data);
 
-      // Chekc the response to validate is the data send properply or not.
-
-      // Navigate to next screen that says enjoy your drink
-      // Pass the required data to next screen.
-      // Username , date, time , drinkType
-
-      // setConfirmation({
-      //   message: `Enjoy your ${drinkType}!`,
-      //   date: formattedDate,
-      //   time: formattedTime,
-      // });
       navigation.navigate('Enjoy', {
         empName: employeeName,
         empId: employeeId,
